@@ -1,0 +1,10 @@
+[
+  {
+    "role": "roleA",
+    "weight": 1.0
+  },
+  {
+    "role": "roleB",
+    "weight": 2.0
+  }
+]
