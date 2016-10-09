@@ -1,20 +1,16 @@
 <component name="libraryTable">
   <library name="GOPATH &lt;learn-mesos&gt;">
     <CLASSES>
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/gopkg.in" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/honnef.co" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/github.com" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/golang.org" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/google.golang.org" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/gitlab.ucloudadmin.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/gitlab.ucloudadmin.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/golang.org" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/github.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/gopkg.in" />
     </CLASSES>
     <SOURCES>
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/gopkg.in" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/honnef.co" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/github.com" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/golang.org" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/google.golang.org" />
-      <root url="file://$USER_HOME$/gopath/go1.6.2/src/gitlab.ucloudadmin.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/gitlab.ucloudadmin.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/golang.org" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/github.com" />
+      <root url="file://$USER_HOME$/gopath/go1.7.1/src/gopkg.in" />
     </SOURCES>
     <excluded>
       <root url="file://$PROJECT_DIR$" />

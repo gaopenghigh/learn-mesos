@@ -38,11 +38,17 @@ var (
 
 type demoScheduler struct {
 	enableCheckPoint bool
+	justPrintOffers  bool
 	enableContainer  bool
+	role             string
 	containerType    string
 	image            string
 	network          string
+	networkName      string
 	exposePorts      []int
+	reserveCPUs      float64
+	reserveMem       float64
+	alreadyReserved  bool
 	shellCmdQueue    *list.List
 	shutdown         chan struct{}
 }
@@ -220,9 +226,21 @@ func (s *demoScheduler) Disconnected(scheduler.SchedulerDriver) {
 }
 
 func (s *demoScheduler) ResourceOffers(driver scheduler.SchedulerDriver, offers []*mesosproto.Offer) {
-	// s.printOffers(offers)
+	if s.reserveMem > 0 || s.reserveCPUs > 0 {
+		s.printOffers(offers)
+		if !s.alreadyReserved {
+			s.reserveResources(driver, offers[0])
+		}
+		s.declineOffers(driver, offers[1:])
+		return
+	}
+	if s.justPrintOffers {
+		s.printOffers(offers)
+		return
+	}
 	if s.shellCmdQueue.Len() == 0 {
 		s.declineOffers(driver, offers)
+		return
 	}
 
 	if !s.enableContainer {
@@ -243,6 +261,42 @@ func (s *demoScheduler) ResourceOffers(driver scheduler.SchedulerDriver, offers 
 		return
 	}
 	panic("unsupported container type")
+}
+
+func (s *demoScheduler) reserveResources(driver scheduler.SchedulerDriver, offer *mesosproto.Offer) {
+	log.Infof("Reserving CPUs: %f, Mem: %f on offer %s", s.reserveCPUs, s.reserveMem, offer.Id)
+	offerIDs := []*mesosproto.OfferID{offer.Id}
+	cpuResource := mesosutil.NewScalarResource("cpus", s.reserveCPUs)
+	cpuResource.Role = proto.String(s.role)
+	memResource := mesosutil.NewScalarResource("mem", s.reserveMem)
+	memResource.Role = proto.String(s.role)
+
+	resources := []*mesosproto.Resource{cpuResource, memResource}
+	log.WithFields(log.Fields{"resources": resources}).Info("reserve resources")
+	operation := &mesosproto.Offer_Operation {
+			Type: mesosproto.Offer_Operation_RESERVE.Enum(),
+			Reserve: &mesosproto.Offer_Operation_Reserve{
+				Resources: resources,
+			},
+	}
+	log.WithFields(log.Fields{"operation": operation}).Info("reserve operation")
+	operations := []*mesosproto.Offer_Operation{}
+	operations = append(operations, operation)
+	log.WithFields(log.Fields{
+		"offer": offer,
+		"operations": operations,
+		"offerIDs": offerIDs,
+	}).Info("reserve resource")
+	status, err := driver.AcceptOffers(offerIDs, operations, defaultFilter)
+	if err != nil {
+		log.WithFields(log.Fields{"status": status, "err": err}).Error("reserve resource failed")
+		panic(err)
+	}
+	log.WithFields(log.Fields{
+		"status": status.String(),
+		"offerIDs": offerIDs,
+	}).Info("reserve resource success")
+	s.alreadyReserved = true
 }
 
 func (s *demoScheduler) printOffers(offers []*mesosproto.Offer) {
@@ -353,13 +407,17 @@ func main() {
 	role := flag.String("role", "*", "framework role")
 	taskNum := flag.Int("taskNum", 1, "number of tasks")
 	cmd := flag.String("cmd", "while true; do echo command running; sleep 10; done", "shell command")
+	justPrintOffers := flag.Bool("justPrintOffers", false, "do nothing bug print offers")
 	enableContainer := flag.Bool("enableContainer", false, "wether to use a container")
 	enableCheckPoint := flag.Bool("enableCheckPoint", false, "wether to enable check point")
 	containerType := flag.String("containerType", "docker",
 		"type of container, useContainer need to be true, can be: mesosproto, docker, mesosprotoWithImage")
 	image := flag.String("image", "", "image of container, useContainer need to be true")
-	network := flag.String("network", "host", "docker network type, host|bridge|none|...")
+	network := flag.String("network", "host", "docker containerizer: docker network type, host|bridge|none|...")
+	networkName := flag.String("networkName", "", "mesos containerizer: name of CNI network to join")
 	expose := flag.String("expose", "", "comma separated container ports e.g. 8080,8090,9000")
+	reserveCPUs := flag.Float64("reserveCPUs", 0.0, "reserve cpus for role")
+	reserveMem := flag.Float64("reserveMem", 0.0, "reserve mem for role")
 	flag.Parse()
 
 	if *enableContainer {
@@ -372,11 +430,17 @@ func main() {
 
 	demoSche := &demoScheduler{
 		enableContainer:  *enableContainer,
+		justPrintOffers:  *justPrintOffers,
 		enableCheckPoint: *enableCheckPoint,
+		role:             *role,
 		containerType:    *containerType,
 		image:            *image,
 		exposePorts:      exposePorts,
+		reserveCPUs:      *reserveCPUs,
+		reserveMem:      *reserveMem,
 		network:          *network,
+		networkName:      *networkName,
+		alreadyReserved:  false,
 		shutdown:         make(chan struct{}),
 		shellCmdQueue:    list.New(),
 	}
