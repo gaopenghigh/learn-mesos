@@ -27,6 +27,12 @@
 			"revisionTime": "2016-09-27T20:09:49Z"
 		},
 		{
+			"checksumSHA1": "ZSwG4ZzkexvwKsVw2DmKitc/VsM=",
+			"path": "github.com/mesos/mesos-go",
+			"revision": "51da00a1caf23c61f0c3aa54e0a115206f2100c7",
+			"revisionTime": "2016-09-13T18:38:31Z"
+		},
+		{
 			"checksumSHA1": "AwL6gGPNrpKip+E2J1RUtOQRqMc=",
 			"path": "github.com/mesos/mesos-go/auth",
 			"revision": "7228b13084ce3ea645dbf7c8ecb5704301a6eadf",
@@ -67,6 +73,24 @@
 			"path": "github.com/mesos/mesos-go/detector/zoo",
 			"revision": "7228b13084ce3ea645dbf7c8ecb5704301a6eadf",
 			"revisionTime": "2016-10-04T19:21:23Z"
+		},
+		{
+			"checksumSHA1": "te78oqbCP1DizBfdsGpY8jVpHAs=",
+			"path": "github.com/mesos/mesos-go/encoding",
+			"revision": "51da00a1caf23c61f0c3aa54e0a115206f2100c7",
+			"revisionTime": "2016-09-13T18:38:31Z"
+		},
+		{
+			"checksumSHA1": "WFhgsedVLLBiH39/1C6WqDpeb80=",
+			"path": "github.com/mesos/mesos-go/encoding/framing",
+			"revision": "51da00a1caf23c61f0c3aa54e0a115206f2100c7",
+			"revisionTime": "2016-09-13T18:38:31Z"
+		},
+		{
+			"checksumSHA1": "8w1DpfKaxliYiJ8vRN5uEpzTimY=",
+			"path": "github.com/mesos/mesos-go/encoding/proto",
+			"revision": "51da00a1caf23c61f0c3aa54e0a115206f2100c7",
+			"revisionTime": "2016-09-13T18:38:31Z"
 		},
 		{
 			"checksumSHA1": "8vP63QzXtvt6XaQUDYjKuaSgILc=",
